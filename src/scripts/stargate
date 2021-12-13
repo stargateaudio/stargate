@@ -8,11 +8,42 @@ import sys
 import time
 
 REAL_PATH = __file__
+IS_APP_IMAGE = False
 
 for i in range(20):
     if os.path.islink(REAL_PATH):
-        print(f"Replacing symlink: {REAL_PATH}")
-        REAL_PATH = os.readlink(REAL_PATH)
+        old = REAL_PATH
+        link = os.readlink(REAL_PATH)
+        if os.path.isabs(link):
+            REAL_PATH = link
+        else:
+            dirname = os.path.dirname(REAL_PATH)
+            print(os.listdir(dirname))
+            REAL_PATH = os.path.join(dirname, link)
+            app_run = os.path.join(dirname, 'AppRun')
+            if os.path.exists(app_run):
+                IS_APP_IMAGE = True
+                sys_path = [
+                    os.path.join(
+                        dirname,
+                        'usr',
+                        'lib',
+                        'python3',
+                        'dist-packages',
+                    ),
+                    os.path.join(
+                        dirname,
+                        'usr',
+                        'lib',
+                        'python3.7',
+                    ),
+                ]
+                print(
+                    f"Modified sys.path for AppImage: from {sys.path} "
+                    f"to {sys_path}"
+                )
+                sys.path = sys_path
+        print(f"Replacing symlink: {old} with {REAL_PATH}")
     else:
         break
 

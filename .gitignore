@@ -1,3 +1,5 @@
+*.AppImage
+*.AppDir/
 *.cproject
 *.deb
 *.deps*

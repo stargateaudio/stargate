@@ -149,6 +149,8 @@ def which(a_file):
     f_path_arr = os.getenv("PATH").split(";" if IS_WINDOWS else ":")
     if IS_WINDOWS and BIN_DIR not in f_path_arr:
         f_path_arr.insert(0, BIN_DIR)
+    else:
+        f_path_arr.append(BIN_DIR)
     for f_path in (pi_path(x) for x in f_path_arr):
         f_file_path = os.path.join(f_path, a_file)
         if os.path.exists(f_file_path) and not os.path.isdir(f_file_path):
@@ -199,8 +201,8 @@ elif IS_MAC_OSX:
             "sbsms",
         )
 elif IS_LINUX:
-    # Prefer the vendored SBSMS
     RUBBERBAND_PATH = which("rubberband")
+    # Prefer the vendored SBSMS
     sbsms_util = os.path.join(
         os.path.dirname(__file__),
         '..',
